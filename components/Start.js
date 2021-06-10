@@ -6,11 +6,13 @@ export default class Start extends React.Component {
     super(props);
     this.state = {
       name: '',
-      backColor: '#FFF'
+      backColor: '#757083'
     }
   }
 
   render() {
+    let { backColor } = this.state
+
     return (
       <View style={styles.container}>
         <ImageBackground
@@ -52,7 +54,7 @@ export default class Start extends React.Component {
               </View>
             </View>
             <TouchableOpacity
-              style={styles.startButton}
+              style={{ backgroundColor: backColor, height: 60, }}
               onPress={() => this.props.navigation.navigate('Chat', { name: this.state.name, backColor: this.state.backColor })}
             >
               <Text style={styles.startText}>Start Chatting</Text>
