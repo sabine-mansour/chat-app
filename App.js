@@ -1,5 +1,4 @@
 import React from 'react';
-import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
 
 //import Screens
 import Start from './components/Start';
@@ -38,12 +37,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
