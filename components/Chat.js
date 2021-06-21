@@ -1,15 +1,15 @@
 import React from 'react';
-import { View, Platform, KeyboardAvoidingView, Text } from 'react-native'
+import { View, Platform, KeyboardAvoidingView } from 'react-native'
 
 //Gifted Chat library
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 
 //Firebase collection
 const firebase = require('firebase');
 require('firebase/firestore');
 
 //Async Storage
-import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //NetInfo
 import NetInfo from '@react-native-community/netinfo';
@@ -121,9 +121,13 @@ export default class Chat extends React.Component {
       let data = doc.data();
       messages.push({
         _id: data._id,
-        text: data.text,
+        text: data.text || null,
         createdAt: data.createdAt.toDate(),
-        user: data.user,
+        user: {
+          _id: data.user._id,
+          name: data.user.name,
+          avatar: data.user.avatar,
+        },
       });
     });
     this.setState({
@@ -183,8 +187,8 @@ export default class Chat extends React.Component {
   }
 
   // InputToolbar not rendering when user offline
-  renderInputToolbar(props) {
-    if (this.state.isConnected == false) {
+  renderInputToolbar = props => {
+    if (this.state.isConnected === false) {
     } else {
       return (
         <InputToolbar
@@ -200,12 +204,10 @@ export default class Chat extends React.Component {
       <View style={{ flex: 1, backgroundColor: this.state.backColor }}>
         <GiftedChat
           renderBubble={this.renderBubble.bind(this)}
-          renderInputToolbar={this.renderInputToolbar}
+          renderInputToolbar={this.renderInputToolbar.bind(this)}
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
-          user={{
-            _id: 1,
-          }}
+          user={this.state.user}
         />
         { Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
       </View>
