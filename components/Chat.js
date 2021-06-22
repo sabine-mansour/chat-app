@@ -14,6 +14,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //NetInfo
 import NetInfo from '@react-native-community/netinfo';
 
+//Customes chat features component
+import CustomActions from './CustomActions';
+
+//MapView component
+import MapView from 'react-native-maps';
+
 
 export default class Chat extends React.Component {
   constructor(props) {
@@ -39,6 +45,8 @@ export default class Chat extends React.Component {
         avatar: "",
       },
       isConnected: false,
+      image: null,
+      location: null,
       backColor: this.props.route.params.backColor
     };
   }
@@ -112,6 +120,8 @@ export default class Chat extends React.Component {
       createdAt: message.createdAt,
       text: message.text || null,
       user: message.user,
+      image: message.image || null,
+      location: message.location || null
     });
   }
 
@@ -128,6 +138,8 @@ export default class Chat extends React.Component {
           name: data.user.name,
           avatar: data.user.avatar,
         },
+        image: data.image,
+        location: data.location
       });
     });
     this.setState({
@@ -198,6 +210,33 @@ export default class Chat extends React.Component {
     }
   }
 
+  renderCustomActions = (props) => {
+    return <CustomActions {...props} />;
+  };
+
+  renderCustomView(props) {
+    const { currentMessage } = props;
+    if (currentMessage.location) {
+      return (
+        <MapView
+          style={{
+            width: 150,
+            height: 100,
+            borderRadius: 13,
+            margin: 3
+          }}
+          region={{
+            latitude: currentMessage.location.latitude,
+            longitude: currentMessage.location.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        />
+      );
+    }
+    return null;
+  }
+
 
   render() {
     return (
@@ -205,6 +244,8 @@ export default class Chat extends React.Component {
         <GiftedChat
           renderBubble={this.renderBubble.bind(this)}
           renderInputToolbar={this.renderInputToolbar.bind(this)}
+          renderActions={this.renderCustomActions}
+          renderCustomView={this.renderCustomView}
           messages={this.state.messages}
           onSend={messages => this.onSend(messages)}
           user={this.state.user}
